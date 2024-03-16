@@ -21,6 +21,6 @@ public class Product {
     @Column(name="price", nullable = false, columnDefinition = "BIGINT CHECK (price >= 0)")
     private Long price;
 
-    @Column(name="stock", nullable = false, columnDefinition = "BIGINT CHECK (stock >= 0)")
+    @Column(name="stock", nullable = false, columnDefinition = "INT CHECK (stock >= 0)")
     private Integer stock;
 }
