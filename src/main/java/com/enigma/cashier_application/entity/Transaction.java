@@ -32,4 +32,8 @@ public class Transaction {
     @JsonManagedReference
     private List<TransactionDetail> transactionDetail;
 
+    @OneToOne
+    @JoinColumn(name= "payment_id", unique = true)
+    private Payment payment;
+
 }
