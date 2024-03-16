@@ -1,7 +1,7 @@
 package com.enigma.cashier_application.service.impl;
 
 import com.enigma.cashier_application.dto.request.ProductRequest;
-import com.enigma.cashier_application.dto.request.SearchProductRequest;
+import com.enigma.cashier_application.dto.request.SearchRequest;
 import com.enigma.cashier_application.dto.response.ProductResponse;
 import com.enigma.cashier_application.entity.Product;
 import com.enigma.cashier_application.repository.ProductRepository;
@@ -35,13 +35,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void update(Product request) {
-        Product product=productRepository.findById(request.getId()).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product not found"));
+        findById(request.getId());
         productRepository.updateProduct(request.getId(), request.getMenuName(), request.getPrice(), request.getStock());
     }
 
     @Override
-    public Page<ProductResponse> findAllProduct(SearchProductRequest request) {
+    @Transactional
+    public Page<ProductResponse> findAllProduct(SearchRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
         Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
@@ -57,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse findById(String id) {
         Product product = productRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product not found"));
         return ProductResponse.builder()
@@ -64,6 +67,13 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .menuName(product.getMenuName())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void delete(String id) {
+        findById(id);
+        productRepository.deleteById(id);
     }
 
 }

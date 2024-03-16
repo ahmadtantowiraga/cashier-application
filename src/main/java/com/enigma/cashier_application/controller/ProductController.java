@@ -1,7 +1,7 @@
 package com.enigma.cashier_application.controller;
 
 import com.enigma.cashier_application.dto.request.ProductRequest;
-import com.enigma.cashier_application.dto.request.SearchProductRequest;
+import com.enigma.cashier_application.dto.request.SearchRequest;
 import com.enigma.cashier_application.dto.response.CommonResponse;
 import com.enigma.cashier_application.dto.response.PagingResponse;
 import com.enigma.cashier_application.dto.response.ProductResponse;
@@ -51,7 +51,7 @@ public class ProductController {
             @RequestParam(name="direction", defaultValue = "asc") String direction,
             @RequestParam(name="sortBy", defaultValue = "id") String sortBy
     ){
-        SearchProductRequest searchRequest = SearchProductRequest.builder()
+        SearchRequest searchRequest = SearchRequest.builder()
                 .direction(direction)
                 .sortBy(sortBy)
                 .size(size)
@@ -84,5 +84,16 @@ public class ProductController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
     };
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<String>> delete(@PathVariable String id){
+        productService.delete(id);
+        CommonResponse<String> commonResponse = CommonResponse.<String>builder()
+                .data("Ok")
+                .message("Successfully delete data")
+                .statusCode(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
+    };
+
 
 }
