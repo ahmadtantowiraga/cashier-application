@@ -31,4 +31,15 @@ public class AuthController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponse);
     };
+    @PostMapping(path = "/registerAdmin", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<RegisterResponse>> createAdmin(@RequestBody AuthRequest request){
+        RegisterResponse response=authService.registerAdmin(request);
+        CommonResponse<RegisterResponse> commonResponse = CommonResponse.<RegisterResponse>builder()
+                .data(response)
+                .message("Successfully create data")
+                .statusCode(HttpStatus.CREATED.value())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponse);
+    };
 }

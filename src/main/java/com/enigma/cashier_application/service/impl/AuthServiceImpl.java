@@ -80,7 +80,27 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegisterResponse registerAdmin(AuthRequest request) {
-        return null;
+        Role roleUser=roleService.saveOrGet(UserRole.ROLE_CUSTOMER);
+        Role roleAdmin = roleService.saveOrGet(UserRole.ROLE_ADMIN);
+        String hashPassword= passwordEncoder.encode(request.getPassword());
+        UserAccount userAccount=UserAccount.builder()
+                .role(List.of(roleAdmin, roleUser))
+                .isEnable(true)
+                .username(request.getUsername())
+                .password(hashPassword)
+                .build();
+        userAccountRepository.create(userAccount.getId(), userAccount.getIsEnable(),
+                userAccount.getPassword(), userAccount.getUsername());
+        Customer customer=Customer.builder()
+                .isMember(true)
+                .id(UUID.randomUUID().toString())
+                .userAccount(userAccount)
+                .build();
+        customerService.createCustomerAccount(customer.getId(), null, true, null, customer.getUserAccount().getId());
+        return RegisterResponse.builder()
+                .username(userAccount.getUsername())
+                .role(userAccount.getRole().stream().map(role1 -> role1.getRole().name()).toList())
+                .build();
     }
 
     @Override
