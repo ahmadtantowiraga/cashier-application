@@ -10,10 +10,15 @@ import com.enigma.cashier_application.entity.UserAccount;
 import com.enigma.cashier_application.repository.UserAccountRepository;
 import com.enigma.cashier_application.service.AuthService;
 import com.enigma.cashier_application.service.CustomerService;
+import com.enigma.cashier_application.service.JwtService;
 import com.enigma.cashier_application.service.RoleService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +34,9 @@ public class AuthServiceImpl implements AuthService {
     private final CustomerService customerService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+
     @Value("${wmb.username.superadmin}")
     private String usernameSuperAdmin;
 
@@ -66,6 +74,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         userAccountRepository.create(userAccount.getId(), userAccount.getIsEnable(),
                 userAccount.getPassword(), userAccount.getUsername());
+        userAccountRepository.save(userAccount);
         Customer customer=Customer.builder()
                 .isMember(true)
                 .id(UUID.randomUUID().toString())
@@ -93,6 +102,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         userAccountRepository.create(userAccount.getId(), userAccount.getIsEnable(),
                 userAccount.getPassword(), userAccount.getUsername());
+        userAccountRepository.save(userAccount);
         Customer customer=Customer.builder()
                 .isMember(true)
                 .id(UUID.randomUUID().toString())
@@ -107,6 +117,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(AuthRequest request) {
-        return null;
+        Authentication authentication=new UsernamePasswordAuthenticationToken(
+                request.getUsername(),
+                request.getPassword()
+        );
+        Authentication authenticate = authenticationManager.authenticate(authentication);
+        UserAccount userAccount =(UserAccount) authenticate.getPrincipal();
+        String token= jwtService.generateToken(userAccount);
+        return LoginResponse.builder()
+                .username(userAccount.getUsername())
+                .token(token)
+                .role(userAccount.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .build();
     }
 }

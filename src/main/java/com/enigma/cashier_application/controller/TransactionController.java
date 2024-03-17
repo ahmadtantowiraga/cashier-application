@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping(path = "/api/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
                  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionResponse>> create(@RequestBody TransactionRequest request){
@@ -33,6 +35,7 @@ public class TransactionController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponse);
     };
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionResponse>> findById(@PathVariable(name = "id") String id){
         TransactionResponse response=transactionService.findById(id);
@@ -43,6 +46,7 @@ public class TransactionController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
     };
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<List<TransactionResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,

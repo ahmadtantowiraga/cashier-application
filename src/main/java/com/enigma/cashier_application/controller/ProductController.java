@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequestMapping(path = "/api/products")
 public class ProductController {
     private final ProductService productService;
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
                             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<ProductResponse>> create(@RequestBody ProductRequest request){
@@ -32,6 +34,7 @@ public class ProductController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponse);
     };
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> update(@RequestBody Product request){
@@ -43,7 +46,7 @@ public class ProductController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
     };
-
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<List<ProductResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
@@ -74,6 +77,7 @@ public class ProductController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
     };
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<ProductResponse>> findById(@PathVariable(name = "id") String id){
         ProductResponse response=productService.findById(id);
@@ -84,6 +88,7 @@ public class ProductController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
     };
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> delete(@PathVariable String id){
         productService.delete(id);

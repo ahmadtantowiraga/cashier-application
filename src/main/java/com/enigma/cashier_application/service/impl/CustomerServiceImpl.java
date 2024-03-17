@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<Customer> customerList = customerRepository.findAllCustomer();
 
         List<CustomerResponse> responseList = customerList.stream().map(customer -> {
-            String userAccountId=customer.getId()==null ? null : customer.getUserAccount().getId();
+            String userAccountId=customer.getUserAccount()==null ? null : customer.getUserAccount().getId();
             return CustomerResponse.builder()
                     .customerName(customer.getCustomerName())
                     .isMember(customer.getIsMember())
