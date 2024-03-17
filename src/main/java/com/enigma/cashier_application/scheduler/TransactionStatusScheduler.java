@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class TransactionStatusScheduler {
     private final TransactionService transactionService;
 
-    @Scheduled(fixedRate = 1000*60*30)
+    @Scheduled(fixedRate = 5000)
     public void checkStatus(){
         log.info("START checkFailedPayments() : {}", System.currentTimeMillis());
         transactionService.updateStatusTransaction();

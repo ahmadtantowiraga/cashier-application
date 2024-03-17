@@ -77,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void update(Customer request) {
         findById(request.getId());
-        customerRepository.updateProduct(request.getId(), request.getCustomerName(), request.getMobilePhoneNo());
+        customerRepository.updateCustomer(request.getId(), request.getCustomerName(), request.getMobilePhoneNo());
     }
 
     @Override
@@ -90,5 +90,10 @@ public class CustomerServiceImpl implements CustomerService {
                 .isMember(customer.getIsMember())
                 .userAccountId(userId)
                 .build();
+    }
+
+    @Override
+    public void createCustomerAccount(String id, String name, Boolean member, String phone, String account) {
+        customerRepository.create(id, name, member, phone, account);
     }
 }

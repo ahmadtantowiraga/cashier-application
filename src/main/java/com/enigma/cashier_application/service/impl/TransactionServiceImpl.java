@@ -109,11 +109,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void updateStatusTransaction() {
-        List<Payment> payments = paymentRepository.findAll();
+        List<Payment> payments = paymentRepository.findAllByTransactionStatus("ordered");
         payments.forEach(payment -> {
             if (payment.getTransactionStatus().equals("ordered")){
-                if((new Date()).getTime()-payment.getTransaction().getDate().getTime()>=1000*60*30){
-                    paymentRepository.updateProduct(payment.getId(), "Paid");
+                if((new Date()).getTime()-payment.getTransaction().getDate().getTime()>=5000){
+                    paymentRepository.updateProduct(payment.getId(), "Cancelled");
                 }
             }
         });

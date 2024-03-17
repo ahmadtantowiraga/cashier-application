@@ -17,7 +17,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
     @Query(value ="INSERT INTO m_transaction (id, transaction_date, customer_id) VALUES " +
                   "(:id, :transactionDate, :customerId)", nativeQuery = true)
     void create(@Param("id") String id, @Param("transactionDate") Date date, @Param("customerId") String customerId);
-    @Modifying
+
     @Query(value= "SELECT * FROM m_transaction", nativeQuery = true)
     List<Transaction> findAllTransaction();
 }

@@ -17,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Query(value ="UPDATE m_product SET product_name = :name, price= :price, stock=:stock WHERE id = :id", nativeQuery = true)
     void updateProduct(@Param("id") String id, @Param("name") String name, @Param("price") Long price, @Param("stock") Integer stock);
 
-    @Modifying
+
     @Query(value= "SELECT * FROM m_product", nativeQuery = true)
     List<Product> findAllProduct();
 

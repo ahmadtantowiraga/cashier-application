@@ -5,6 +5,7 @@ import com.enigma.cashier_application.dto.request.SearchRequest;
 import com.enigma.cashier_application.dto.response.CustomerResponse;
 import com.enigma.cashier_application.entity.Customer;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface CustomerService {
     void deleteById(String id);
     void update(Customer request);
     CustomerResponse findById(String id);
+    void createCustomerAccount(String id, String name, Boolean member, String phone, String account);
 }
