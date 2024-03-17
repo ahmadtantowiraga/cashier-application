@@ -108,12 +108,17 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateStatusTransaction() {
         List<Payment> payments = paymentRepository.findAllByTransactionStatus("ordered");
         payments.forEach(payment -> {
             if (payment.getTransactionStatus().equals("ordered")){
                 if((new Date()).getTime()-payment.getTransaction().getDate().getTime()>=1000*60*30){
                     paymentRepository.updateProduct(payment.getId(), "Cancelled");
+                    for (TransactionDetail transactionDetail : payment.getTransaction().getTransactionDetail()) {
+                        Product product = transactionDetail.getProduct();
+                        product.setStock(product.getStock() + transactionDetail.getQty());
+                    }
                 }
             }
         });
