@@ -112,7 +112,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<Payment> payments = paymentRepository.findAllByTransactionStatus("ordered");
         payments.forEach(payment -> {
             if (payment.getTransactionStatus().equals("ordered")){
-                if((new Date()).getTime()-payment.getTransaction().getDate().getTime()>=5000){
+                if((new Date()).getTime()-payment.getTransaction().getDate().getTime()>=1000*60*30){
                     paymentRepository.updateProduct(payment.getId(), "Cancelled");
                 }
             }

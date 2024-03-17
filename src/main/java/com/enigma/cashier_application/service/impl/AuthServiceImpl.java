@@ -79,12 +79,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RegisterResponse registerAdmin(AuthRequest request) {
-        Role roleUser=roleService.saveOrGet(UserRole.ROLE_CUSTOMER);
-        Role roleAdmin = roleService.saveOrGet(UserRole.ROLE_ADMIN);
+        Role adminRole = roleService.saveOrGet(UserRole.ROLE_ADMIN);
+        Role customerRole = roleService.saveOrGet(UserRole.ROLE_CUSTOMER);
         String hashPassword= passwordEncoder.encode(request.getPassword());
         UserAccount userAccount=UserAccount.builder()
-                .role(List.of(roleAdmin, roleUser))
+                .id(UUID.randomUUID().toString())
+                .role(List.of(adminRole, customerRole))
                 .isEnable(true)
                 .username(request.getUsername())
                 .password(hashPassword)
