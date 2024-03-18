@@ -3,7 +3,7 @@
 Aplikasi kasir ini dibuat menggunakan framework springboot dan dapat digunakan oleh kasir dalam melakukan transaksi jual beli.
 
 ## FEATURES
-- Docker
+- Swagger
 - Register
 - Login
 - CRUD Customer
